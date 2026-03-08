@@ -7,6 +7,10 @@ import (
 	"syscall"
 
 	"github.com/joho/godotenv"
+
+	"bonsai/internal/mqtt"
+	"bonsai/internal/printer"
+	"bonsai/internal/server"
 )
 
 func main() {
@@ -19,13 +23,13 @@ func main() {
 
 	log.Printf("connecting to %s (serial: %s)", broker, serial)
 
-	client, err := connectMQTT(broker, serial, user, pass, onMessageUpdate)
+	client, err := mqtt.Connect(broker, serial, user, pass, onMessageUpdate)
 	if err != nil {
 		log.Fatalf("failed to connect: %v", err)
 	}
 	defer client.Disconnect(250)
 
-	startServer()
+	server.Start()
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
@@ -39,4 +43,16 @@ func getEnv(key string) string {
 		log.Fatalf("env var %s not set", key)
 	}
 	return v
+}
+
+func onMessageUpdate(state *printer.PrinterState) {
+	log.Printf("state=%s file=%q progress=%d%% nozzle=%.1f/%.1f bed=%.1f/%.1f remaining=%ds layer=%d/%d",
+		state.GcodeState,
+		state.GcodeFile,
+		state.PrintPercent,
+		state.NozzleTemp, state.NozzleTargetTemp,
+		state.BedTemp, state.BedTargetTemp,
+		state.RemainingTime,
+		state.LayerNum, state.TotalLayerNum,
+	)
 }
