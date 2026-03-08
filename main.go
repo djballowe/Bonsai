@@ -25,6 +25,8 @@ func main() {
 	}
 	defer client.Disconnect(250)
 
+	startServer()
+
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 	<-sig

@@ -18,10 +18,10 @@ func connectMQTT(broker, serial, user, pass string, onUpdate func(*PrinterState)
 		SetUsername(user).
 		SetPassword(pass).
 		SetTLSConfig(&tls.Config{InsecureSkipVerify: true}).
-		SetClientID("bonsai-dashboard-1").
+		SetClientID("bonsai-dashboard").
 		SetConnectTimeout(10 * time.Second).
 		SetAutoReconnect(true).
-		SetOnConnectHandler(onConnectHandler(topic, serial, onUpdate)).
+		SetOnConnectHandler(onConnectHandler(topic, onUpdate)).
 		SetConnectionLostHandler(connectionLostHandler)
 
 	client := mqtt.NewClient(opts)
@@ -34,7 +34,7 @@ func connectMQTT(broker, serial, user, pass string, onUpdate func(*PrinterState)
 	return client, nil
 }
 
-func onConnectHandler(topic, serial string, onUpdate func(*PrinterState)) mqtt.OnConnectHandler {
+func onConnectHandler(topic string, onUpdate func(*PrinterState)) mqtt.OnConnectHandler {
 	return func(c mqtt.Client) {
 		log.Printf("connected, subscribing to %s", topic)
 
