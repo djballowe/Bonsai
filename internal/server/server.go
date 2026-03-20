@@ -2,14 +2,16 @@ package server
 
 import (
 	"bonsai/internal/printer"
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var tmpl = template.Must(template.ParseFiles("templates/index.html"))
+var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
 
 var updates = make(chan *printer.PrinterState, 1)
 
@@ -55,13 +57,13 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case state := <-updates:
-			data, err := json.Marshal(state)
-			if err != nil {
-				log.Printf("could not marshal json: %s", err)
+			var buf bytes.Buffer
+			if err := statusTmpl.Execute(&buf, state); err != nil {
+				log.Printf("template error: %v", err)
 				continue
 			}
-
-			fmt.Fprintf(w, "event: printerUpdate\ndata: %s\n\n", data)
+			html := strings.ReplaceAll(buf.String(), "\n", "")
+			fmt.Fprintf(w, "event: printerUpdate\ndata: %s\n\n", html)
 			flusher.Flush()
 		case <-r.Context().Done():
 			log.Printf("sse client disconnected: %s", r.RemoteAddr)
