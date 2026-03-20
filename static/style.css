@@ -1,0 +1,28 @@
+:root {
+  --bg: #0d0d0d;
+  --fg: #c0c0c0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: monospace;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.status-box {
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.sub-status div {
+  padding: 10px;
+}
