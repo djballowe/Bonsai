@@ -57,6 +57,7 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case state := <-updates:
+			log.Printf("nozzle temp: %.1f", state.NozzleTemp)
 			var buf bytes.Buffer
 			if err := statusTmpl.Execute(&buf, state); err != nil {
 				log.Printf("template error: %v", err)

@@ -16,3 +16,13 @@ body {
   padding: 2rem;
   min-height: 100vh;
 }
+
+.status-box {
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.sub-status div {
+  padding: 10px;
+}
