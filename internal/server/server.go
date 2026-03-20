@@ -4,9 +4,12 @@ import (
 	"bonsai/internal/printer"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 )
+
+var tmpl = template.Must(template.ParseFiles("templates/index.html"))
 
 var updates = make(chan *printer.PrinterState, 1)
 
@@ -18,6 +21,7 @@ func Broadcast(state *printer.PrinterState) {
 }
 
 func Start() {
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/events", handleEvents)
 
@@ -30,7 +34,9 @@ func Start() {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "<h1>bonsai dashboard</h1><p>coming soon</p>")
+	if err := tmpl.Execute(w, nil); err != nil {
+		log.Printf("template error: %v", err)
+	}
 }
 
 func handleEvents(w http.ResponseWriter, r *http.Request) {
