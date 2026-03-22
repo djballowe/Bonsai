@@ -2,18 +2,45 @@
   <div class="sub-status">
     <h3>Progress</h3>
     <div>state: {{.GcodeState}}</div>
+    <div>type: {{.PrintType}}</div>
     <div>progress: {{.PrintPercent}}</div>
     <div>remaining: {{.RemainingTime}}</div>
-    <div>layer: {{.LayerNum}}</div>
+    <div>layer: {{.LayerNum}} / {{.TotalLayerNum}}</div>
+    <div>error: {{.PrintError}}</div>
   </div>
   <div class="sub-status">
-    <h3>Temps</h3>
-    <div>nozzle: {{.NozzleTemp}}</div>
-    <div>bed: {{.BedTemp}}</div>
+    <h3>Temperatures</h3>
+    <div>nozzle: {{.NozzleTemp}} / {{.NozzleTargetTemp}}</div>
+    <div>bed: {{.BedTemp}} / {{.BedTargetTemp}}</div>
     <div>chamber: {{.ChamberTemp}}</div>
   </div>
   <div class="sub-status">
-    <h3>System</h3>
+    <h3>File</h3>
+    <div>file: {{.GcodeFile}}</div>
+    <div>task: {{.SubtaskName}}</div>
+    <div>id: {{.TaskID}}</div>
+  </div>
+  <div class="sub-status">
+    <h3>Fans</h3>
+    <div>cooling: {{.CoolingFanSpeed}}</div>
+    <div>heatbreak: {{.HeatbreakFanSpeed}}</div>
+    <div>big fan 1: {{.BigFan1Speed}}</div>
+    <div>big fan 2: {{.BigFan2Speed}}</div>
+  </div>
+  <div class="sub-status">
+    <h3>Speed</h3>
+    <div>magnitude: {{.SpeedMagnitude}}</div>
+    <div>level: {{.SpeedLevel}}</div>
+  </div>
+  <div class="sub-status">
+    <h3>Hardware</h3>
+    <div>nozzle diameter: {{.NozzleDiameter}}</div>
+    <div>nozzle type: {{.NozzleType}}</div>
+    <div>sd card: {{.SDCard}}</div>
     <div>wifi: {{.WifiSignal}}</div>
+  </div>
+  <div class="sub-status">
+    <h3>Queue</h3>
+    <div>position: {{.QueueNumber}} / {{.QueueTotal}}</div>
   </div>
 </div>
