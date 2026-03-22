@@ -1,15 +1,19 @@
 <div id="status" class="status-box">
   <div class="sub-status">
     <h3>Progress</h3>
-    <div>print percent: {{ .PrintPercent }}:</div>
-    <div>remaining time: {{ .RemainingTime}}:</div>
+    <div>state: {{.GcodeState}}</div>
+    <div>progress: {{.PrintPercent}}</div>
+    <div>remaining: {{.RemainingTime}}</div>
+    <div>layer: {{.LayerNum}}</div>
   </div>
   <div class="sub-status">
     <h3>Temps</h3>
-    <div>nozzle temp: {{ .NozzleTemp }}</div>
-    <div>nozzle target temp: {{ .NozzleTargetTemp }}</div>
-    <div>bed temp: {{ .BedTemp}}</div>
-    <div>bed target temp: {{ .BedTargetTemp}}</div>
-    <div>chamber temp: {{ .ChamberTemp}}</div>
+    <div>nozzle: {{.NozzleTemp}}</div>
+    <div>bed: {{.BedTemp}}</div>
+    <div>chamber: {{.ChamberTemp}}</div>
+  </div>
+  <div class="sub-status">
+    <h3>System</h3>
+    <div>wifi: {{.WifiSignal}}</div>
   </div>
 </div>

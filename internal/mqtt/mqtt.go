@@ -13,7 +13,7 @@ import (
 )
 
 type bambuMessage struct {
-	Print *printer.PrinterState `json:"print"`
+	PrintMessage *printer.PrinterState `json:"print"`
 }
 
 func Connect(broker, serial, user, pass string, onUpdate func(*printer.PrinterState)) (paho.Client, error) {
@@ -59,8 +59,8 @@ func messageHandler(onUpdate func(*printer.PrinterState)) paho.MessageHandler {
 			log.Printf("parse error: %v", err)
 			return
 		}
-		if m.Print != nil {
-			onUpdate(m.Print)
+		if m.PrintMessage != nil {
+			onUpdate(m.PrintMessage)
 		}
 	}
 }
