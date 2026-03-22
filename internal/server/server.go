@@ -2,6 +2,7 @@ package server
 
 import (
 	"bonsai/internal/printer"
+	"bonsai/internal/view"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -60,7 +61,8 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		select {
 		case state := <-updates:
 			var buf bytes.Buffer
-			err := statusTmpl.Execute(&buf, state)
+			templateStateUI := view.NewStatusView(state)
+			err := statusTmpl.Execute(&buf, templateStateUI)
 			if err != nil {
 				log.Printf("template error: %v", err)
 				continue
