@@ -14,10 +14,12 @@ var tmpl = template.Must(template.ParseFiles("templates/index.html"))
 var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
 
 var updates = make(chan *printer.PrinterState, 1)
+var last *printer.PrinterState
 
 func Broadcast(state *printer.PrinterState) {
+	last = merge(last, state)
 	select {
-	case updates <- state:
+	case updates <- last:
 	default:
 	}
 }
@@ -57,9 +59,9 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case state := <-updates:
-			log.Printf("nozzle temp: %.1f", state.NozzleTemp)
 			var buf bytes.Buffer
-			if err := statusTmpl.Execute(&buf, state); err != nil {
+			err := statusTmpl.Execute(&buf, state)
+			if err != nil {
 				log.Printf("template error: %v", err)
 				continue
 			}
@@ -71,4 +73,40 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func merge(last *printer.PrinterState, current *printer.PrinterState) *printer.PrinterState {
+	if last == nil {
+		return current
+	}
+	merged := *last
+
+	if current.NozzleTemp != nil {
+		merged.NozzleTemp = current.NozzleTemp
+	}
+	if current.BedTemp != nil {
+		merged.BedTemp = current.BedTemp
+	}
+	if current.ChamberTemp != nil {
+		merged.ChamberTemp = current.ChamberTemp
+	}
+	if current.GcodeState != nil {
+		merged.GcodeState = current.GcodeState
+	}
+	if current.PrintPercent != nil {
+		merged.PrintPercent = current.PrintPercent
+	}
+	if current.RemainingTime != nil {
+		merged.RemainingTime = current.RemainingTime
+	}
+	if current.TotalLayerNum != nil {
+		merged.TotalLayerNum = current.TotalLayerNum
+	}
+	if current.PrintError != nil {
+		merged.PrintError = current.PrintError
+	}
+	if current.WifiSignal != nil {
+		merged.WifiSignal = current.WifiSignal
+	}
+	return &merged
 }
