@@ -57,7 +57,6 @@ type StatusView struct {
 	ChamberLight string
 }
 
-// TODO review this not sure if its accurate
 func fanPct(s string) int {
 	val, err := strconv.Atoi(s)
 	if err != nil || val < 0 {
