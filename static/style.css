@@ -1,5 +1,5 @@
 :root {
-  --bg: #1c1a14;
+  --bg: #1a1816;
   --fg: #e8ddb8;
   --border: #e8ddb8;
   --dim: #e8ddb8;
@@ -104,7 +104,6 @@ legend {
 }
 
 /* Fans */
-/* TODO may want to double check this logic*/
 .fan-bar-wrap {
   display: flex;
   align-items: center;
@@ -126,4 +125,14 @@ legend {
 .fan-val {
   color: var(--dim);
   font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  .panel-row {
+    grid-template-columns: 1fr;
+  }
 }
