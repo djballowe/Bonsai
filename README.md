@@ -1,6 +1,6 @@
 # Bonsai
 
-A minimal web dashboard for monitoring a Bambu Lab A1 Mini 3D printer in real time. Connects to the printer over MQTT (SSL/TLS), parses status messages, and streams live updates to the browser.
+An extremly minimal TUI like web dashboard for monitoring a Bambu Lab A1 Mini 3D printer in real time. Connects to the printer over MQTT (SSL/TLS), parses status messages, and streams live updates to the browser.
 
 ## Environment Variables
 

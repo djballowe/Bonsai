@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-var tmpl = template.Must(template.ParseFiles("templates/index.html"))
-var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
+// var tmpl = template.Must(template.ParseFiles("templates/index.html"))
+// var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
 
 var updates = make(chan *printer.PrinterState, 1)
 var last *printer.PrinterState
@@ -32,13 +32,25 @@ func Start() {
 
 	go func() {
 		log.Println("listening on http://localhost:3100")
-		if err := http.ListenAndServe(":3100", nil); err != nil {
+		err := http.ListenAndServe(":3100", nil)
+		if err != nil {
 			log.Fatalf("http: %v", err)
 		}
 	}()
 }
 
+// TODO: revert to cached tmpl when done with frontend dev
 func handleIndex(w http.ResponseWriter, r *http.Request) {
+	// err := tmpl.Execute(w, nil)
+	// if err != nil {
+	// 	log.Printf("template error: %v", err)
+	// }
+	tmpl, err := template.ParseFiles("templates/index.html")
+	if err != nil {
+		log.Printf("template parse error: %v", err)
+		http.Error(w, "template error", http.StatusInternalServerError)
+		return
+	}
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("template error: %v", err)
 	}
@@ -62,7 +74,14 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		case state := <-updates:
 			var buf bytes.Buffer
 			templateStateUI := view.NewStatusView(state)
-			err := statusTmpl.Execute(&buf, templateStateUI)
+			// TODO: revert to cached statusTmpl when done with frontend dev
+			// err := statusTmpl.Execute(&buf, templateStateUI)
+			statusTmpl, err := template.ParseFiles("templates/status.html")
+			if err != nil {
+				log.Printf("template parse error: %v", err)
+				continue
+			}
+			err = statusTmpl.Execute(&buf, templateStateUI)
 			if err != nil {
 				log.Printf("template error: %v", err)
 				continue

@@ -1,46 +1,88 @@
-<div id="status" class="status-box">
-  <div class="sub-status">
-    <h3>Progress</h3>
-    <div>state: {{.GcodeState}}</div>
-    <div>type: {{.PrintType}}</div>
-    <div>progress: {{.PrintPercent}}</div>
-    <div>remaining: {{.RemainingTime}}</div>
-    <div>layer: {{.LayerNum}} / {{.TotalLayerNum}}</div>
-    <div>error: {{.PrintError}}</div>
+<div id="status">
+  <fieldset class="panel panel--full">
+    <legend>PROGRESS</legend>
+    <div class="progress__header">
+      <span class="progress__file">{{.GcodeFile}}</span>
+      <span class="progress__state">{{.GcodeState}}</span>
+    </div>
+    <div class="progress__bar">
+      <div class="progress__fill" style="width:{{.PrintPercentInt}}%"></div>
+    </div>
+    <div class="progress__meta">
+      <span>{{.PrintPercent}}</span>
+      <span>{{.RemainingTimeHHMM}} left</span>
+    </div>
+  </fieldset>
+
+  <div class="panel-row">
+    <fieldset class="panel">
+      <legend>TEMPS</legend>
+      <div class="field-container">
+        <div class="field">
+          <div class="label">Nozzle:</div>
+          <div class="label">Bed:</div>
+          <div class="label">Chamber:</div>
+        </div>
+        <div>
+          <div class="value">{{.NozzleTemp}} / {{.NozzleTargetTemp}}</div>
+          <div class="value">{{.BedTemp}} / {{.BedTargetTemp}}</div>
+          <div class="value">{{.ChamberTemp}}</div>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="panel">
+      <legend>FANS</legend>
+      <div class="field-container">
+        <div class="field">
+          <div class="label">Cooling:</div>
+          <div class="label">Test Field:</div>
+          <div class="label">Heatbreak:</div>
+          <div class="label">Fan 1:</div>
+          <div class="label">Fan 2:</div>
+        </div>
+        <div>
+          <div class="bar value">{{.CoolingFanBar}} {{.CoolingFanSpeed}}</div>
+          <div class="bar value">{{.CoolingFanBar}} {{.CoolingFanSpeed}}</div>
+          <div class="bar value">
+            {{.HeatbreakFanBar}} {{.HeatbreakFanSpeed}}
+          </div>
+          <div class="bar value">{{.BigFan1Bar}} {{.BigFan1Speed}}</div>
+          <div class="bar value">{{.BigFan2Bar}} {{.BigFan2Speed}}</div>
+        </div>
+      </div>
+    </fieldset>
   </div>
-  <div class="sub-status">
-    <h3>Temperatures</h3>
-    <div>nozzle: {{.NozzleTemp}} / {{.NozzleTargetTemp}}</div>
-    <div>bed: {{.BedTemp}} / {{.BedTargetTemp}}</div>
-    <div>chamber: {{.ChamberTemp}}</div>
-  </div>
-  <div class="sub-status">
-    <h3>File</h3>
-    <div>file: {{.GcodeFile}}</div>
-    <div>task: {{.SubtaskName}}</div>
-    <div>id: {{.TaskID}}</div>
-  </div>
-  <div class="sub-status">
-    <h3>Fans</h3>
-    <div>cooling: {{.CoolingFanSpeed}}</div>
-    <div>heatbreak: {{.HeatbreakFanSpeed}}</div>
-    <div>big fan 1: {{.BigFan1Speed}}</div>
-    <div>big fan 2: {{.BigFan2Speed}}</div>
-  </div>
-  <div class="sub-status">
-    <h3>Speed</h3>
-    <div>magnitude: {{.SpeedMagnitude}}</div>
-    <div>level: {{.SpeedLevel}}</div>
-  </div>
-  <div class="sub-status">
-    <h3>Hardware</h3>
-    <div>nozzle diameter: {{.NozzleDiameter}}</div>
-    <div>nozzle type: {{.NozzleType}}</div>
-    <div>sd card: {{.SDCard}}</div>
-    <div>wifi: {{.WifiSignal}}</div>
-  </div>
-  <div class="sub-status">
-    <h3>Queue</h3>
-    <div>position: {{.QueueNumber}} / {{.QueueTotal}}</div>
+
+  <div class="panel-row">
+    <fieldset class="panel">
+      <legend>PRINT</legend>
+      <div class="field-container">
+        <div class="field">
+          <div class="label">Layer:</div>
+          <div class="label">Speed:</div>
+          <div class="label">Stage:</div>
+        </div>
+        <div>
+          <div class="value">{{.LayerNum}} / {{.TotalLayerNum}}</div>
+          <div class="value">{{.SpeedMagnitude}}</div>
+          <div class="value">{{.PrintStage}}</div>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="panel">
+      <legend>HARDWARE</legend>
+      <div class="field-container">
+        <div class="field">
+          <div class="label">Nozzle:</div>
+          <div class="label">WiFi:</div>
+          <div class="label">SD Card:</div>
+        </div>
+        <div>
+          <div class="value">{{.NozzleDiameter}} {{.NozzleType}}</div>
+          <div class="value">{{.WifiSignal}}</div>
+          <div class="value">{{.SDCard}}</div>
+        </div>
+      </div>
+    </fieldset>
   </div>
 </div>
