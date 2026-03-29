@@ -32,7 +32,8 @@ func Start() {
 
 	go func() {
 		log.Println("listening on http://localhost:3100")
-		if err := http.ListenAndServe(":3100", nil); err != nil {
+		err := http.ListenAndServe(":3100", nil)
+		if err != nil {
 			log.Fatalf("http: %v", err)
 		}
 	}()
@@ -76,6 +77,7 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 
 // This is cringe but whatever for now
 func merge(last *printer.PrinterState, current *printer.PrinterState) *printer.PrinterState {
