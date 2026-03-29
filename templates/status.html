@@ -41,13 +41,36 @@
           <div class="label">Fan 2:</div>
         </div>
         <div>
-          <div class="bar value">{{.CoolingFanBar}} {{.CoolingFanSpeed}}</div>
-          <div class="bar value">{{.CoolingFanBar}} {{.CoolingFanSpeed}}</div>
-          <div class="bar value">
-            {{.HeatbreakFanBar}} {{.HeatbreakFanSpeed}}
+          <div class="value fan-bar-wrap">
+            <div class="fan-bar">
+              <div class="fan-fill" style="width:{{.CoolingFanPct}}%"></div>
+            </div>
+            <span class="fan-val">{{.CoolingFanSpeed}}</span>
           </div>
-          <div class="bar value">{{.BigFan1Bar}} {{.BigFan1Speed}}</div>
-          <div class="bar value">{{.BigFan2Bar}} {{.BigFan2Speed}}</div>
+          <div class="value fan-bar-wrap">
+            <div class="fan-bar">
+              <div class="fan-fill" style="width:{{.CoolingFanPct}}%"></div>
+            </div>
+            <span class="fan-val">{{.CoolingFanSpeed}}</span>
+          </div>
+          <div class="value fan-bar-wrap">
+            <div class="fan-bar">
+              <div class="fan-fill" style="width:{{.HeatbreakFanPct}}%"></div>
+            </div>
+            <span class="fan-val">{{.HeatbreakFanSpeed}}</span>
+          </div>
+          <div class="value fan-bar-wrap">
+            <div class="fan-bar">
+              <div class="fan-fill" style="width:{{.BigFan1Pct}}%"></div>
+            </div>
+            <span class="fan-val">{{.BigFan1Speed}}</span>
+          </div>
+          <div class="value fan-bar-wrap">
+            <div class="fan-bar">
+              <div class="fan-fill" style="width:{{.BigFan2Pct}}%"></div>
+            </div>
+            <span class="fan-val">{{.BigFan2Speed}}</span>
+          </div>
         </div>
       </div>
     </fieldset>
@@ -76,11 +99,31 @@
           <div class="label">Nozzle:</div>
           <div class="label">WiFi:</div>
           <div class="label">SD Card:</div>
+          <div class="label">Chamber:</div>
         </div>
         <div>
           <div class="value">{{.NozzleDiameter}} {{.NozzleType}}</div>
           <div class="value">{{.WifiSignal}}</div>
           <div class="value">{{.SDCard}}</div>
+          <div class="value">{{.ChamberLight}}</div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="panel-row">
+    <fieldset class="panel">
+      <legend>FILAMENT</legend>
+      <div class="field-container">
+        <div class="field">
+          <div class="label">Type:</div>
+          <div class="label">Color:</div>
+          <div class="label">Temp:</div>
+        </div>
+        <div>
+          <div class="value">{{.FilamentType}}</div>
+          <div class="value">{{.FilamentColor}}</div>
+          <div class="value">{{.FilamentTempMin}} - {{.FilamentTempMax}}</div>
         </div>
       </div>
     </fieldset>

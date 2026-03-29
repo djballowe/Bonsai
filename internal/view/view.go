@@ -4,7 +4,6 @@ import (
 	"bonsai/internal/printer"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type StatusView struct {
@@ -31,13 +30,13 @@ type StatusView struct {
 	TaskID      string
 	// Fans
 	CoolingFanSpeed   string
-	CoolingFanBar     string
+	CoolingFanPct     int
 	HeatbreakFanSpeed string
-	HeatbreakFanBar   string
+	HeatbreakFanPct   int
 	BigFan1Speed      string
-	BigFan1Bar        string
+	BigFan1Pct        int
 	BigFan2Speed      string
-	BigFan2Bar        string
+	BigFan2Pct        int
 	// Speed
 	SpeedMagnitude string
 	SpeedLevel     string
@@ -49,18 +48,25 @@ type StatusView struct {
 	// Queue
 	QueueNumber string
 	QueueTotal  string
+	// Filament (VTTray)
+	FilamentType    string
+	FilamentColor   string
+	FilamentTempMin string
+	FilamentTempMax string
+	// Lights
+	ChamberLight string
 }
 
-func fanBar(s string) string {
+// TODO review this not sure if its accurate
+func fanPct(s string) int {
 	val, err := strconv.Atoi(s)
 	if err != nil || val < 0 {
-		return "░░░░░░░░"
+		return 0
 	}
 	if val > 15 {
 		val = 15
 	}
-	filled := val * 8 / 15
-	return strings.Repeat("█", filled) + strings.Repeat("░", 8-filled)
+	return val * 100 / 15
 }
 
 func formatMinutes(min int) string {
@@ -88,13 +94,13 @@ func NewStatusView(s *printer.PrinterState) StatusView {
 		SubtaskName:       "--",
 		TaskID:            "--",
 		CoolingFanSpeed:   "--",
-		CoolingFanBar:     "░░░░░░░░",
+		CoolingFanPct:     0,
 		HeatbreakFanSpeed: "--",
-		HeatbreakFanBar:   "░░░░░░░░",
+		HeatbreakFanPct:   0,
 		BigFan1Speed:      "--",
-		BigFan1Bar:        "░░░░░░░░",
+		BigFan1Pct:        0,
 		BigFan2Speed:      "--",
-		BigFan2Bar:        "░░░░░░░░",
+		BigFan2Pct:        0,
 		SpeedMagnitude:    "--",
 		SpeedLevel:        "--",
 		NozzleDiameter:    "--",
@@ -103,6 +109,11 @@ func NewStatusView(s *printer.PrinterState) StatusView {
 		WifiSignal:        "--",
 		QueueNumber:       "--",
 		QueueTotal:        "--",
+		FilamentType:      "--",
+		FilamentColor:     "--",
+		FilamentTempMin:   "--",
+		FilamentTempMax:   "--",
+		ChamberLight:      "--",
 	}
 
 	if s == nil {
@@ -165,19 +176,19 @@ func NewStatusView(s *printer.PrinterState) StatusView {
 	// Fans
 	if s.CoolingFanSpeed != nil {
 		v.CoolingFanSpeed = *s.CoolingFanSpeed
-		v.CoolingFanBar = fanBar(*s.CoolingFanSpeed)
+		v.CoolingFanPct = fanPct(*s.CoolingFanSpeed)
 	}
 	if s.HeatbreakFanSpeed != nil {
 		v.HeatbreakFanSpeed = *s.HeatbreakFanSpeed
-		v.HeatbreakFanBar = fanBar(*s.HeatbreakFanSpeed)
+		v.HeatbreakFanPct = fanPct(*s.HeatbreakFanSpeed)
 	}
 	if s.BigFan1Speed != nil {
 		v.BigFan1Speed = *s.BigFan1Speed
-		v.BigFan1Bar = fanBar(*s.BigFan1Speed)
+		v.BigFan1Pct = fanPct(*s.BigFan1Speed)
 	}
 	if s.BigFan2Speed != nil {
 		v.BigFan2Speed = *s.BigFan2Speed
-		v.BigFan2Bar = fanBar(*s.BigFan2Speed)
+		v.BigFan2Pct = fanPct(*s.BigFan2Speed)
 	}
 	// Speed
 	if s.SpeedMagnitude != nil {
@@ -209,6 +220,21 @@ func NewStatusView(s *printer.PrinterState) StatusView {
 	}
 	if s.QueueTotal != nil {
 		v.QueueTotal = fmt.Sprintf("%d", *s.QueueTotal)
+	}
+	// Filament (VTTray)
+	if s.VTTray.TrayType != "" {
+		v.FilamentType = s.VTTray.TrayType
+		v.FilamentTempMin = s.VTTray.NozzleTempMin + "°C"
+		v.FilamentTempMax = s.VTTray.NozzleTempMax + "°C"
+		if len(s.VTTray.TrayColor) >= 6 {
+			v.FilamentColor = "#" + s.VTTray.TrayColor[:6]
+		}
+	}
+	// Lights
+	for _, light := range s.LightsReport {
+		if light.Node == "chamber_light" {
+			v.ChamberLight = light.Mode
+		}
 	}
 
 	return v

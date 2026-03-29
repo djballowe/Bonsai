@@ -11,8 +11,8 @@ import (
 	"strings"
 )
 
-// var tmpl = template.Must(template.ParseFiles("templates/index.html"))
-// var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
+var tmpl = template.Must(template.ParseFiles("templates/index.html"))
+var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
 
 var updates = make(chan *printer.PrinterState, 1)
 var last *printer.PrinterState
@@ -39,18 +39,7 @@ func Start() {
 	}()
 }
 
-// TODO: revert to cached tmpl when done with frontend dev
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	// err := tmpl.Execute(w, nil)
-	// if err != nil {
-	// 	log.Printf("template error: %v", err)
-	// }
-	tmpl, err := template.ParseFiles("templates/index.html")
-	if err != nil {
-		log.Printf("template parse error: %v", err)
-		http.Error(w, "template error", http.StatusInternalServerError)
-		return
-	}
 	if err := tmpl.Execute(w, nil); err != nil {
 		log.Printf("template error: %v", err)
 	}
@@ -74,14 +63,7 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		case state := <-updates:
 			var buf bytes.Buffer
 			templateStateUI := view.NewStatusView(state)
-			// TODO: revert to cached statusTmpl when done with frontend dev
-			// err := statusTmpl.Execute(&buf, templateStateUI)
-			statusTmpl, err := template.ParseFiles("templates/status.html")
-			if err != nil {
-				log.Printf("template parse error: %v", err)
-				continue
-			}
-			err = statusTmpl.Execute(&buf, templateStateUI)
+			err := statusTmpl.Execute(&buf, templateStateUI)
 			if err != nil {
 				log.Printf("template error: %v", err)
 				continue
@@ -95,6 +77,7 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
 
 // This is cringe but whatever for now
 func merge(last *printer.PrinterState, current *printer.PrinterState) *printer.PrinterState {

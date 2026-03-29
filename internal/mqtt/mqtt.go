@@ -17,7 +17,6 @@ type bambuMessage struct {
 }
 
 func Connect(broker, serial, user, pass string, onUpdate func(*printer.PrinterState)) (paho.Client, error) {
-
 	opts := paho.NewClientOptions().
 		AddBroker(broker).
 		SetUsername(user).
