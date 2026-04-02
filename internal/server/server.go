@@ -11,24 +11,33 @@ import (
 	"strings"
 )
 
-var tmpl = template.Must(template.ParseFiles("templates/index.html"))
-var statusTmpl = template.Must(template.ParseFiles("templates/status.html"))
+type Server struct {
+	tmpl       *template.Template
+	statusTmpl *template.Template
+	updates    chan *printer.PrinterState
+	last       *printer.PrinterState
+}
 
-var updates = make(chan *printer.PrinterState, 1)
-var last *printer.PrinterState
+func New() *Server {
+	return &Server{
+		tmpl:       template.Must(template.ParseFiles("templates/index.html")),
+		statusTmpl: template.Must(template.ParseFiles("templates/status.html")),
+		updates:    make(chan *printer.PrinterState, 1),
+	}
+}
 
-func Broadcast(state *printer.PrinterState) {
-	last = merge(last, state)
+func (s *Server) Broadcast(state *printer.PrinterState) {
+	s.last = merge(s.last, state)
 	select {
-	case updates <- last:
+	case s.updates <- s.last:
 	default:
 	}
 }
 
-func Start() {
+func (s *Server) Start() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/events", handleEvents)
+	http.HandleFunc("/", s.handleIndex)
+	http.HandleFunc("/events", s.handleEvents)
 
 	go func() {
 		log.Println("listening on http://localhost:3100")
@@ -39,13 +48,13 @@ func Start() {
 	}()
 }
 
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	if err := tmpl.Execute(w, nil); err != nil {
+func (s *Server) handleIndex(w http.ResponseWriter, r *http.Request) {
+	if err := s.tmpl.Execute(w, nil); err != nil {
 		log.Printf("template error: %v", err)
 	}
 }
 
-func handleEvents(w http.ResponseWriter, r *http.Request) {
+func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
 	flusher, ok := w.(http.Flusher)
 	if !ok {
 		http.Error(w, "streaming unsupported", http.StatusInternalServerError)
@@ -60,10 +69,10 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 
 	for {
 		select {
-		case state := <-updates:
+		case state := <-s.updates:
 			var buf bytes.Buffer
 			templateStateUI := view.NewStatusView(state)
-			err := statusTmpl.Execute(&buf, templateStateUI)
+			err := s.statusTmpl.Execute(&buf, templateStateUI)
 			if err != nil {
 				log.Printf("template error: %v", err)
 				continue
@@ -77,7 +86,6 @@ func handleEvents(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
 
 // This is cringe but whatever for now
 func merge(last *printer.PrinterState, current *printer.PrinterState) *printer.PrinterState {
