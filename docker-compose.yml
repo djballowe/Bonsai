@@ -1,0 +1,12 @@
+services:
+  bonsai:
+    image: <your-dockerhub-username>/bonsai:latest
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    environment:
+        - IP=192.168.1.100
+        - SERIAL=abc123
+        - MQTT_USER=myuser
+        - PASS=mypassword
+
