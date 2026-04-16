@@ -11,9 +11,8 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("failed to load env file: %s", err)
+	if err := godotenv.Load(); err != nil {
+		log.Printf("no .env file found, reading from environment")
 	}
 
 	broker := "ssl://" + getEnv("IP") + ":8883"
